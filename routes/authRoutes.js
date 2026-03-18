@@ -25,7 +25,7 @@ router.post("/login", async (req, res) => {
     }
 
     // Temporary plain test login
-    if (user.userId !== "admin123" || password !== "123456") {
+    if (user.userId !== "1603944251" || password !== "8wybmpee") {
       return res.status(401).json({
         success: false,
         message: "Invalid user ID or password"
