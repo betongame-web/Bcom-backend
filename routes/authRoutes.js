@@ -1,5 +1,4 @@
 const express = require("express");
-const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 
@@ -25,9 +24,8 @@ router.post("/login", async (req, res) => {
       });
     }
 
-    const isMatch = await bcrypt.compare(password, user.passwordHash);
-
-    if (!isMatch) {
+    // Temporary plain test login
+    if (user.userId !== "admin123" || password !== "123456") {
       return res.status(401).json({
         success: false,
         message: "Invalid user ID or password"
