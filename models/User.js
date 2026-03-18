@@ -11,9 +11,25 @@ const profileSchema = new mongoose.Schema(
     documentType: { type: String, default: "National ID card" },
     documentNumber: { type: String, default: "" },
     documentIssueDate: { type: String, default: "" },
-    country: { type: String, default: "" },
+    country: { type: String, default: "Pakistan" },
     city: { type: String, default: "" },
     address: { type: String, default: "" }
+  },
+  { _id: false }
+);
+
+const fieldLocksSchema = new mongoose.Schema(
+  {
+    email: { type: Boolean, default: false },
+    phone: { type: Boolean, default: false },
+    lastName: { type: Boolean, default: false },
+    firstName: { type: Boolean, default: false },
+    dateOfBirth: { type: Boolean, default: false },
+    placeOfBirth: { type: Boolean, default: false },
+    documentNumber: { type: Boolean, default: false },
+    documentIssueDate: { type: Boolean, default: false },
+    city: { type: Boolean, default: false },
+    address: { type: Boolean, default: false }
   },
   { _id: false }
 );
@@ -28,14 +44,14 @@ const userSchema = new mongoose.Schema(
     },
     passwordHash: {
       type: String,
-      required: true
-    },
-    profileLocked: {
-      type: Boolean,
-      default: false
+      default: ""
     },
     profile: {
       type: profileSchema,
+      default: () => ({})
+    },
+    fieldLocks: {
+      type: fieldLocksSchema,
       default: () => ({})
     }
   },
