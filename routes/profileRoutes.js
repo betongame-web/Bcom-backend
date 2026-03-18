@@ -11,7 +11,7 @@ router.get("/me", authMiddleware, async (req, res) => {
     if (!user) {
       return res.status(404).json({
         success: false,
-        message: "User not found"
+        message: "User not found",
       });
     }
 
@@ -19,15 +19,28 @@ router.get("/me", authMiddleware, async (req, res) => {
       success: true,
       user: {
         userId: user.userId,
-        profileLocked: user.profileLocked,
-        profile: user.profile
-      }
+        profileLocked: Boolean(user.profileLocked),
+        profile: user.profile || {
+          email: "",
+          phone: "",
+          lastName: "",
+          firstName: "",
+          dateOfBirth: "",
+          placeOfBirth: "",
+          documentType: "National ID card",
+          documentNumber: "",
+          documentIssueDate: "",
+          country: "Pakistan",
+          city: "",
+          address: "",
+        },
+      },
     });
   } catch (error) {
     return res.status(500).json({
       success: false,
       message: "Server error",
-      error: error.message
+      error: error.message,
     });
   }
 });
@@ -39,14 +52,14 @@ router.post("/save-once", authMiddleware, async (req, res) => {
     if (!user) {
       return res.status(404).json({
         success: false,
-        message: "User not found"
+        message: "User not found",
       });
     }
 
     if (user.profileLocked) {
       return res.status(403).json({
         success: false,
-        message: "Profile already submitted and locked"
+        message: "Profile already submitted and locked",
       });
     }
 
@@ -60,24 +73,24 @@ router.post("/save-once", authMiddleware, async (req, res) => {
       documentType = "National ID card",
       documentNumber = "",
       documentIssueDate = "",
-      country = "",
+      country = "Pakistan",
       city = "",
-      address = ""
+      address = "",
     } = req.body;
 
     user.profile = {
-      email,
-      phone,
-      lastName,
-      firstName,
-      dateOfBirth,
-      placeOfBirth,
-      documentType,
-      documentNumber,
-      documentIssueDate,
-      country,
-      city,
-      address
+      email: String(email).trim(),
+      phone: String(phone).trim(),
+      lastName: String(lastName).trim(),
+      firstName: String(firstName).trim(),
+      dateOfBirth: String(dateOfBirth).trim(),
+      placeOfBirth: String(placeOfBirth).trim(),
+      documentType: String(documentType).trim() || "National ID card",
+      documentNumber: String(documentNumber).trim(),
+      documentIssueDate: String(documentIssueDate).trim(),
+      country: String(country).trim() || "Pakistan",
+      city: String(city).trim(),
+      address: String(address).trim(),
     };
 
     user.profileLocked = true;
@@ -89,15 +102,15 @@ router.post("/save-once", authMiddleware, async (req, res) => {
       message: "Profile saved successfully and locked forever",
       user: {
         userId: user.userId,
-        profileLocked: user.profileLocked,
-        profile: user.profile
-      }
+        profileLocked: true,
+        profile: user.profile,
+      },
     });
   } catch (error) {
     return res.status(500).json({
       success: false,
       message: "Server error",
-      error: error.message
+      error: error.message,
     });
   }
 });
